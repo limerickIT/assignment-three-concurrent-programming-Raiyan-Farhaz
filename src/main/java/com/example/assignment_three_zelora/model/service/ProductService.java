@@ -1,11 +1,13 @@
 package com.example.assignment_three_zelora.model.service;
 
+import com.example.assignment_three_zelora.model.entitys.Inventory;
 import com.example.assignment_three_zelora.model.entitys.Product;
+import com.example.assignment_three_zelora.model.entitys.Review;
 import com.example.assignment_three_zelora.model.repos.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -18,102 +20,124 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    // Existing CRUD Operations:
+    // CRUD
+    public Product createProduct(Product product) { return productRepository.save(product); }
+    public List<Product> getAllProducts() { return productRepository.findAll(); }
+    public Product getProductById(Integer id) { return productRepository.findById(id).orElse(null); }
+    public void deleteProduct(Integer id) { productRepository.deleteById(id); }
 
-    // Create
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    // Get all
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    // Get one
-    public Product getProductById(Integer id) {
-        return productRepository.findById(id).orElse(null);
-    }
-
-    // Update
     public Product updateProduct(Integer id, Product updatedProduct) {
-        if (!productRepository.existsById(id)) {
-            return null;
-        }
+        if (!productRepository.existsById(id)) return null;
         updatedProduct.setProductId(id);
         return productRepository.save(updatedProduct);
     }
 
-    // Delete by id
-    public void deleteProduct(Integer id) {
-        productRepository.deleteById(id);
-    }
+    // ---------------------------
+    // FUNCTION 1 — Search
+    // ---------------------------
+    public List<Product> searchProducts(String name, String category,
+                                        Double minPrice, Double maxPrice,
+                                        String keyword, boolean recent) {
 
-    // To Do 1: Multi-Criteria Search Implementation
-
-    /**
-     * Implements the multi-criteria product search (To Do 1).
-     * Filters products based on name, category, price range, keyword, and recent date.
-     */
-    public List<Product> searchProducts(String name, String category, Double minPrice, Double maxPrice, String keyword, boolean recent) {
-        // Fetch all products to perform in-memory filtering (since we are not using custom JPA queries yet)
         List<Product> products = productRepository.findAll();
 
-        return products.stream()
-                .filter(product -> {
-                    // 1. Filter by Product Name (partial match, case-insensitive)
-                    if (name != null && !name.trim().isEmpty()) {
-                        // Using getProductName() to match your entity's getter
-                        if (!product.getProductName().toLowerCase().contains(name.trim().toLowerCase())) {
-                            return false;
-                        }
-                    }
+        return products.stream().filter(product -> {
 
-                    // 2. Filter by Category
-                    if (category != null && !category.trim().isEmpty()) {
-                        // FIX: Accessing the Category entity's getName() method via getCategoryId()
-                        String productCategory = product.getCategoryId() != null && product.getCategoryId().getCategoryName() != null
-                                ? product.getCategoryId().getCategoryName().toLowerCase()
-                                : "";
+            // Name filter
+            if (name != null && !name.isEmpty()) {
+                if (!product.getProductName().toLowerCase().contains(name.toLowerCase()))
+                    return false;
+            }
 
-                        if (!productCategory.contains(category.trim().toLowerCase())) {
-                            return false;
-                        }
-                    }
+            // Category filter
+            if (category != null && !category.isEmpty()) {
+                String cat = (product.getCategoryId() != null &&
+                        product.getCategoryId().getCategoryName() != null)
+                        ? product.getCategoryId().getCategoryName().toLowerCase() : "";
 
-                    // 3. Filter by Price Range
-                    if (minPrice != null && product.getPrice() != null && product.getPrice().doubleValue() < minPrice) {
-                        return false;
-                    }
-                    if (maxPrice != null && product.getPrice() != null && product.getPrice().doubleValue() > maxPrice) {
-                        return false;
-                    }
+                if (!cat.contains(category.toLowerCase()))
+                    return false;
+            }
 
-                    // 4. Filter by Recently Added (Last 7 Days)
-                    if (recent) {
-                        // Calculate the date 7 days ago
-                        Date sevenDaysAgo = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7));
-                        if (product.getReleaseDate() == null || product.getReleaseDate().before(sevenDaysAgo)) {
-                            return false;
-                        }
-                    }
+            // Price filter
+            if (minPrice != null && product.getPrice() != null &&
+                    product.getPrice().doubleValue() < minPrice)
+                return false;
 
-                    // 5. Filter by Keyword (Checks Description and Material fields)
-                    if (keyword != null && !keyword.trim().isEmpty()) {
-                        String searchString = keyword.trim().toLowerCase();
-                        String description = product.getDescription() != null ? product.getDescription().toLowerCase() : "";
+            if (maxPrice != null && product.getPrice() != null &&
+                    product.getPrice().doubleValue() > maxPrice)
+                return false;
 
-                        // FIX: This now correctly calls getMaterial() which exists in your Product class
-                        String material = product.getMaterial() != null ? product.getMaterial().toLowerCase() : "";
+            // Recent filter
+            if (recent) {
+                Date sevenDaysAgo = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7));
+                if (product.getReleaseDate() == null ||
+                        product.getReleaseDate().before(sevenDaysAgo))
+                    return false;
+            }
 
-                        // The keyword must be found in either the description OR the material
-                        if (!description.contains(searchString) && !material.contains(searchString)) {
-                            return false;
-                        }
-                    }
+            // Keyword filter
+            if (keyword != null && !keyword.isEmpty()) {
+                String kw = keyword.toLowerCase();
+                String desc = product.getDescription() != null ? product.getDescription().toLowerCase() : "";
+                String mat = product.getMaterial() != null ? product.getMaterial().toLowerCase() : "";
 
-                    return true; // Product passed all criteria
-                })
-                .collect(Collectors.toList()); // Return the filtered list
+                if (!desc.contains(kw) && !mat.contains(kw))
+                    return false;
+            }
+
+            return true;
+
+        }).collect(Collectors.toList());
+    }
+
+    // ---------------------------
+    // FUNCTION 2 — Stock message
+    // ---------------------------
+    public String getStockMessage(Product product) {
+
+        if (product.getInventoryList() == null || product.getInventoryList().isEmpty()) {
+            return "Out of Stock";
+        }
+
+        Inventory inv = product.getInventoryList().get(0);
+
+        int available = inv.getQuantityInStock() - inv.getQuantityReserved();
+
+        if (available <= 0) return "Out of Stock";
+
+        if (available <= inv.getReorderPoint())
+            return "Low stock — only " + available + " left!";
+
+        return "In Stock (" + available + " available)";
+    }
+
+    // ---------------------------
+    // FUNCTION 2 — Average rating
+    // ---------------------------
+    public Double getAverageRating(Product product) {
+        if (product.getReviewList() == null || product.getReviewList().isEmpty())
+            return 0.0;
+
+        double avg = product.getReviewList()
+                .stream()
+                .filter(r -> r.getRating() != null)
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        return Math.round(avg * 10.0) / 10.0; // round to 1 decimal place
+    }
+
+    // ---------------------------
+    // FUNCTION 2 — Reviews rating ≥ 3
+    // ---------------------------
+    public List<Review> getValidReviews(Product product) {
+        if (product.getReviewList() == null) return List.of();
+
+        return product.getReviewList()
+                .stream()
+                .filter(r -> r.getRating() != null && r.getRating() >= 3)
+                .collect(Collectors.toList());
     }
 }

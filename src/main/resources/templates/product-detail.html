@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+<div class="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-xl">
+
+    <a href="/products/search" class="text-green-700 underline">&larr; Back to Search</a>
+
+    <h1 class="text-4xl font-bold mt-4 mb-6 text-gray-800"
+        th:text="${product.productName}"></h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+            <img th:src="@{'/images/' + ${product.featureImage}}"
+                 class="rounded-xl shadow-lg w-full">
+        </div>
+
+        <div class="space-y-3">
+
+            <p><strong>Category:</strong>
+                <span th:text="${product.categoryId.categoryName}"></span>
+            </p>
+
+            <p><strong>Price:</strong>
+                €<span th:text="${product.discountedPrice != null && product.discountedPrice < product.price ? product.discountedPrice : product.price}"></span>
+            </p>
+
+            <p><strong>Stock Status:</strong>
+                <span th:text="${stockMessage}" class="font-semibold"></span>
+            </p>
+
+            <p><strong>Average Rating:</strong>
+                <span th:text="${averageRating}"></span> / 5
+            </p>
+
+        </div>
+    </div>
+
+    <hr class="my-6">
+
+    <p class="text-gray-700 leading-relaxed"
+       th:text="${product.description}"></p>
+
+    <hr class="my-6">
+
+    <h2 class="text-2xl font-bold mb-4">Customer Reviews (3★+)</h2>
+
+    <div th:if="${reviews.isEmpty()}" class="text-gray-500">No reviews yet.</div>
+
+    <div th:each="rev : ${reviews}" class="mb-4 p-4 bg-gray-50 rounded-lg shadow">
+
+        <p><strong>Rating:</strong>
+            <span th:text="${rev.rating}"></span> ★
+        </p>
+
+        <p><strong>Review:</strong>
+            <span th:text="${rev.reviewText}"></span>
+        </p>
+
+        <p><strong>By:</strong>
+            <span th:text="${rev.customerId.firstName}"></span>
+            from <span th:text="${rev.customerId.city}"></span>
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
