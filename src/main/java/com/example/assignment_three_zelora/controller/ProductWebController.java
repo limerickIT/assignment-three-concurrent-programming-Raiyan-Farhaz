@@ -62,7 +62,7 @@ public class ProductWebController {
         List<Review> validReviews = productService.getValidReviews(product);
 
         // ----------------------------
-        // FUNCTION 3 — Recently Viewed
+        // FUNCTION 3 — Recently Viewed products
         // ----------------------------
         List<Product> recentlyViewed =
                 (List<Product>) session.getAttribute("recentlyViewed");
