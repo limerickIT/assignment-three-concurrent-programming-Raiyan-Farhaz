@@ -43,13 +43,13 @@ public class ProductService {
 
         return products.stream().filter(product -> {
 
-            // Name filter
+            // Name
             if (name != null && !name.isEmpty()) {
                 if (!product.getProductName().toLowerCase().contains(name.toLowerCase()))
                     return false;
             }
 
-            // Category filter
+            // Category
             if (category != null && !category.isEmpty()) {
                 String cat = (product.getCategoryId() != null &&
                         product.getCategoryId().getCategoryName() != null)
@@ -59,24 +59,27 @@ public class ProductService {
                     return false;
             }
 
-            // Price filter
+            // min price
             if (minPrice != null && product.getPrice() != null &&
                     product.getPrice().doubleValue() < minPrice)
                 return false;
 
+            // max price
             if (maxPrice != null && product.getPrice() != null &&
                     product.getPrice().doubleValue() > maxPrice)
                 return false;
 
-            // Recent filter
+            // recently added
             if (recent) {
-                Date sevenDaysAgo = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7));
+                Date sevenDaysAgo =
+                        new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7));
+
                 if (product.getReleaseDate() == null ||
                         product.getReleaseDate().before(sevenDaysAgo))
                     return false;
             }
 
-            // Keyword filter
+            // keyword
             if (keyword != null && !keyword.isEmpty()) {
                 String kw = keyword.toLowerCase();
                 String desc = product.getDescription() != null ? product.getDescription().toLowerCase() : "";
@@ -92,7 +95,7 @@ public class ProductService {
     }
 
     // ---------------------------
-    // FUNCTION 2 — Stock message
+    // FUNCTION 2 — Stock
     // ---------------------------
     public String getStockMessage(Product product) {
 
@@ -113,7 +116,7 @@ public class ProductService {
     }
 
     // ---------------------------
-    // FUNCTION 2 — Average rating
+    // FUNCTION 2 — Average Rating
     // ---------------------------
     public Double getAverageRating(Product product) {
         if (product.getReviewList() == null || product.getReviewList().isEmpty())
@@ -126,11 +129,11 @@ public class ProductService {
                 .average()
                 .orElse(0.0);
 
-        return Math.round(avg * 10.0) / 10.0; // round to 1 decimal place
+        return Math.round(avg * 10.0) / 10.0;
     }
 
     // ---------------------------
-    // FUNCTION 2 — Reviews rating ≥ 3
+    // FUNCTION 2 — Reviews ≥ 3 stars
     // ---------------------------
     public List<Review> getValidReviews(Product product) {
         if (product.getReviewList() == null) return List.of();
