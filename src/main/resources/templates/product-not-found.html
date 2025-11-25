@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Product Not Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+
+<body class="bg-gray-100 font-sans">
+
+<div class="max-w-3xl mx-auto mt-20 bg-white p-10 rounded-xl shadow-xl text-center">
+
+    <h1 class="text-4xl font-bold text-red-600 mb-4">Product Not Found</h1>
+
+    <p class="text-gray-700 text-lg mb-6">
+        The product you are looking for does not exist or may have been removed.
+    </p>
+
+    <a href="/products/search"
+       class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
+        ← Back to Product Search
+    </a>
+
+</div>
 
 </body>
 </html>
