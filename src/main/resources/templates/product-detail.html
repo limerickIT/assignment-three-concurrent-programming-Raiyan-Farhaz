@@ -18,11 +18,14 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+        <!-- PRODUCT IMAGE -->
         <div>
-            <img th:src="@{'/images/' + ${product.featureImage}}"
-                 class="rounded-xl shadow-lg w-full">
+            <img th:src="@{'/' + ${product.featureImage}}"
+                 class="rounded-xl shadow-lg w-full h-80 object-cover bg-gray-200"
+                 alt="Product Image">
         </div>
 
+        <!-- PRODUCT INFO -->
         <div class="space-y-3">
 
             <p><strong>Category:</strong>
@@ -72,10 +75,7 @@
 
     </div>
 
-    <!-- ------------------------------------ -->
-    <!-- FUNCTION 3 — RECENTLY VIEWED SECTION -->
-    <!-- ------------------------------------ -->
-
+    <!-- RECENTLY VIEWED -->
     <hr class="my-8">
 
     <h2 class="text-2xl font-bold mb-4">Recently Viewed</h2>
@@ -90,9 +90,10 @@
         <div th:each="p : ${recentlyViewed}" class="bg-white p-4 rounded-xl shadow-md">
 
             <a th:href="@{/products/{id}(id=${p.productId})}">
-                <img th:src="@{'/images/' + ${p.featureImage}}"
-                     class="rounded-lg w-full h-40 object-cover mb-3 shadow"
-                     alt="Recently Viewed">
+                <img th:src="@{'/' + ${product.featureImage}}"
+                     class="rounded-xl shadow-lg w-full h-80 object-cover"
+                     alt="Product Image">
+
             </a>
 
             <a th:href="@{/products/{id}(id=${p.productId})}"
@@ -112,3 +113,4 @@
 
 </body>
 </html>
+
