@@ -31,15 +31,20 @@ public class ProductWebController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) boolean recent,
+            @RequestParam(required = false) Boolean recent,   // <-- FIXED
             Model model) {
 
+        // null = false (checkbox)
+        boolean recentFlag = (recent != null && recent);
+
         List<Product> products = productService.searchProducts(
-                name, category, minPrice, maxPrice, keyword, recent);
+                name, category, minPrice, maxPrice, keyword, recentFlag);
+
+        // Keep the values in the search form and in language switching
+        model.addAttribute("searchParams",
+                new SearchParams(name, category, minPrice, maxPrice, keyword, recentFlag));
 
         model.addAttribute("products", products);
-        model.addAttribute("searchParams",
-                new SearchParams(name, category, minPrice, maxPrice, keyword, recent));
 
         return "product-search";
     }
@@ -110,5 +115,6 @@ public class ProductWebController {
             this.keyword = keyword;
             this.recent = recent;
         }
+
     }
 }
