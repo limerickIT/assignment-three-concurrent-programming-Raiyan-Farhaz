@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZELORA Product Search</title>
 
-    <!-- Tailwind (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -20,139 +20,135 @@
 
 <body class="min-h-screen flex flex-col">
 
-<!-- HEADER -->
 <header class="zelora-header text-white shadow-lg sticky top-0 z-10">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <a href="/" class="text-3xl font-bold tracking-wider zelora-logo">ZELORA</a>
+
         <nav class="flex space-x-6">
-            <a href="/" class="hover:text-yellow-300">Home</a>
-            <a th:href="@{/products/search}" class="text-yellow-300 font-semibold border-b-2 border-yellow-300">Product Search</a>
-            <a href="#" class="hover:text-yellow-300">Customers</a>
-            <a href="#" class="hover:text-yellow-300">Analytics</a>
+            <a href="/" class="hover:text-yellow-300" th:text="#{nav.home}"></a>
+            <a th:href="@{/products/search}" class="text-yellow-300 font-semibold border-b-2 border-yellow-300"
+               th:text="#{nav.search}"></a>
+            <a href="#" class="hover:text-yellow-300" th:text="#{nav.customers}"></a>
+            <a href="#" class="hover:text-yellow-300" th:text="#{nav.analytics}"></a>
         </nav>
+
+        <div class="flex space-x-3 text-yellow-300 font-bold">
+            <a href="?lang=en">EN</a>
+            <a href="?lang=fr">FR</a>
+        </div>
     </div>
 </header>
 
-
-<!-- MAIN CONTENT -->
 <main class="container mx-auto px-4 py-10 flex-grow">
 
-    <h1 class="text-4xl font-bold text-gray-800 mb-8 border-b pb-2">
-        Multi-Criteria Product Search (To Do 1)
-    </h1>
+    <h1 class="text-4xl font-bold text-gray-800 mb-8 border-b pb-2"
+        th:text="#{search.title}"></h1>
 
-    <!-- SEARCH FORM -->
     <div class="bg-white p-6 rounded-xl shadow-xl mb-8">
-        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Filter Products</h2>
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700"
+            th:text="#{search.filter.title}"></h2>
 
         <form th:action="@{/products/search}" method="get" class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            <!-- Name -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Product Name / Keyword</label>
+                <label class="block text-sm font-medium text-gray-700"
+                       th:text="#{search.name}"></label>
                 <input type="text" name="name" th:value="${searchParams.name}"
-                       placeholder="e.g., Organic, Wool, Dress"
+                       th:placeholder="#{search.placeholder.name}"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
             </div>
 
-            <!-- Category -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Category</label>
+                <label class="block text-sm font-medium text-gray-700"
+                       th:text="#{search.category}"></label>
                 <input type="text" name="category" th:value="${searchParams.category}"
-                       placeholder="e.g., Tops, Outerwear"
+                       th:placeholder="#{search.placeholder.category}"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
             </div>
 
-            <!-- Price Range -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Price Range (€)</label>
+                <label class="block text-sm font-medium text-gray-700"
+                       th:text="#{search.price.range}"></label>
+
                 <div class="mt-1 flex space-x-2">
-                    <input type="number" name="minPrice" th:value="${searchParams.minPrice}" placeholder="Min"
+                    <input type="number" name="minPrice" th:placeholder="#{search.placeholder.min}"
+                           th:value="${searchParams.minPrice}"
                            step="0.01" class="w-1/2 rounded-md border-gray-300 shadow-sm p-2 border">
-                    <input type="number" name="maxPrice" th:value="${searchParams.maxPrice}" placeholder="Max"
+
+                    <input type="number" name="maxPrice" th:placeholder="#{search.placeholder.max}"
+                           th:value="${searchParams.maxPrice}"
                            step="0.01" class="w-1/2 rounded-md border-gray-300 shadow-sm p-2 border">
                 </div>
             </div>
 
-            <!-- Recently Added -->
             <div class="flex items-center pt-5">
                 <input id="recent" type="checkbox" name="recent" th:checked="${searchParams.recent}"
                        class="h-4 w-4 text-green-600 border-gray-300 rounded">
-                <label for="recent" class="ml-2 text-sm font-medium text-gray-700">
-                    Recently Added (Last 7 Days)
-                </label>
+                <label for="recent" class="ml-2 text-sm font-medium text-gray-700"
+                       th:text="#{search.recent}"></label>
             </div>
 
-            <!-- Submit -->
             <div class="md:col-span-3 flex justify-end">
-                <button type="submit" class="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-md">
-                    Search Catalogue
+                <button type="submit"
+                        class="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-md"
+                        th:text="#{search.button}">
                 </button>
             </div>
         </form>
     </div>
 
-
-    <!-- RESULTS -->
     <h2 class="text-3xl font-semibold text-gray-800 mb-4">
-        Results <span th:text="${'(' + products.size() + ')'}"></span>
+        <span th:text="#{search.results}"></span>
+        <span th:text="${'(' + products.size() + ')'}"></span>
     </h2>
 
-    <!-- No results -->
-    <div th:if="${products.isEmpty()}" class="text-center py-10 text-lg text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
+    <div th:if="${products.isEmpty()}"
+         class="text-center py-10 text-lg text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
         No products found matching your criteria.
     </div>
 
-    <!-- Results Table -->
     <div th:unless="${products.isEmpty()}" class="bg-white p-4 rounded-xl shadow-xl overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
 
+        <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
             <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Release Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    th:text="#{search.name}"></th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    th:text="#{search.category}"></th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    th:text="#{search.price.range}"></th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Release Date
+                </th>
             </tr>
             </thead>
 
             <tbody class="bg-white divide-y divide-gray-200">
 
-            <!-- LOOP PRODUCTS -->
             <tr th:each="product : ${products}">
-
-                <!-- Name + clickable link -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
                     <a th:href="@{/products/{id}(id=${product.productId})}"
-                       th:text="${product.productName}" class="hover:underline">
-                    </a>
+                       th:text="${product.productName}"
+                       class="hover:underline"></a>
                 </td>
 
-                <!-- Category -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                    th:text="${product.categoryId != null ? product.categoryId.categoryName : 'N/A'}">
-                </td>
+                    th:text="${product.categoryId != null ? product.categoryId.categoryName : 'N/A'}"></td>
 
-                <!-- Price -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     <span th:text="${'€' + #numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}"></span>
                 </td>
 
-                <!-- Release Date -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                    th:text="${product.releaseDate != null ? #dates.format(product.releaseDate, 'yyyy-MM-dd') : 'N/A'}">
-                </td>
-
+                    th:text="${product.releaseDate != null ? #dates.format(product.releaseDate, 'yyyy-MM-dd') : 'N/A'}"></td>
             </tr>
 
             </tbody>
         </table>
     </div>
-
 </main>
 
-
-<!-- FOOTER -->
 <footer class="bg-gray-800 text-gray-400 py-6 mt-12 w-full">
     <div class="container mx-auto px-4 text-center">
         © 2025 Zelora Eco-Friendly Fashion. TUS Limerick Assignment.
