@@ -2,32 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>ZELORA | Home</title>
+    <title>ZELORA — Home</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        body { background-color:#f7f9fb; font-family: 'Inter', sans-serif; }
-        .zelora-header { background-color:#047857; }
-        .zelora-logo { color:#facc15; }
-    </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-gray-50">
 
-<!-- ===========================
-           HEADER
-=========================== -->
-<header class="zelora-header text-white shadow-lg sticky top-0 z-10">
+<!-- HEADER -->
+<header class="zelora-header text-white shadow-lg sticky top-0 z-10" style="background:#047857">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
 
-        <!-- LOGO -->
-        <a href="/" class="text-3xl font-bold zelora-logo">ZELORA</a>
+        <a href="/" class="text-3xl font-bold zelora-logo" style="color:#facc15">ZELORA</a>
 
-        <!-- NAVIGATION -->
-        <nav class="flex space-x-6 text-white">
-            <a href="/" class="hover:text-yellow-300 font-semibold border-b-2 border-yellow-300">Home</a>
+        <nav class="flex space-x-6">
+            <a th:href="@{/}" class="hover:text-yellow-300">Home</a>
             <a th:href="@{/products/search}" class="hover:text-yellow-300">Product Search</a>
 
             <!-- Language Switch -->
@@ -38,46 +27,48 @@
 </header>
 
 
+<!-- MAIN CONTENT -->
+<main class="container mx-auto px-4 py-20 flex-grow text-center">
 
-<!-- ===========================
-          MAIN CONTENT
-=========================== -->
-<main class="container mx-auto px-4 py-16 text-center flex-grow">
-
-    <h1 class="text-5xl font-bold mb-6 text-gray-800">
-        <span th:if="${#locale.language != 'fr'}">Welcome to ZELORA</span>
-        <span th:if="${#locale.language == 'fr'}">Bienvenue à ZELORA</span>
+    <!-- HERO TITLE -->
+    <h1 class="text-5xl font-bold text-gray-800 mb-6">
+        <span th:if="${#locale.language != 'fr'}">
+            Welcome to ZELORA — Eco-Friendly Fashion
+        </span>
+        <span th:if="${#locale.language == 'fr'}">
+            Bienvenue chez ZELORA — Mode Écologique
+        </span>
     </h1>
 
-    <p class="text-lg text-gray-700 mb-10 max-w-2xl mx-auto">
+    <!-- SUBTEXT -->
+    <p class="text-gray-600 text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
         <span th:if="${#locale.language != 'fr'}">
-            Explore our eco-friendly sustainable fashion catalogue.
-            Search products, view details, and discover recently viewed items.
+            Discover a curated catalogue of sustainable fashion, organic materials,
+            and eco-conscious designs. Explore our database using multi-criteria search
+            and detailed product insights.
         </span>
 
         <span th:if="${#locale.language == 'fr'}">
-            Explorez notre catalogue de mode durable et écologique.
-            Recherchez des produits, voyez les détails et consultez vos articles récemment vus.
+            Découvrez un catalogue de mode durable, des matériaux biologiques
+            et des designs respectueux de l'environnement. Explorez notre base de données
+            grâce à une recherche multicritère et une analyse détaillée des produits.
         </span>
     </p>
 
-    <!-- Primary Button -->
+    <!-- BUTTON -->
     <a th:href="@{/products/search}"
-       class="bg-green-600 text-white px-10 py-4 rounded-full text-xl shadow-lg hover:bg-green-700 transition">
-        <span th:if="${#locale.language != 'fr'}">Go to Product Search</span>
-        <span th:if="${#locale.language == 'fr'}">Aller à la recherche de produits</span>
+       class="bg-green-600 text-white font-semibold px-10 py-4 rounded-full shadow-lg hover:bg-green-700 text-lg transition">
+        <span th:if="${#locale.language != 'fr'}">Explore Products</span>
+        <span th:if="${#locale.language == 'fr'}">Explorer les produits</span>
     </a>
 
 </main>
 
 
-
-<!-- ===========================
-           FOOTER
-=========================== -->
+<!-- FOOTER -->
 <footer class="bg-gray-800 text-gray-400 py-6 mt-12 w-full">
-    <div class="container mx-auto px-4 text-center">
-        © 2025 Zelora Eco-Friendly Fashion — TUS Limerick Assignment
+    <div class="text-center text-sm">
+        © 2025 ZELORA Eco-Friendly Fashion • TUS Limerick Assignment
     </div>
 </footer>
 
