@@ -24,7 +24,7 @@ public class I18nConfig implements WebMvcConfigurer {
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-        interceptor.setParamName("lang"); // <---- IMPORTANT
+        interceptor.setParamName("lang");
         return interceptor;
     }
 
@@ -36,7 +36,7 @@ public class I18nConfig implements WebMvcConfigurer {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
-        ms.setBasename("i18n/messages");  // <---- MUST MATCH your folder!
+        ms.setBasename("i18n/messages");
         ms.setDefaultEncoding("UTF-8");
         ms.setFallbackToSystemLocale(false);
         return ms;

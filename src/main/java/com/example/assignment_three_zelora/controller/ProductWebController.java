@@ -31,10 +31,10 @@ public class ProductWebController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Boolean recent,   // <-- FIXED
+            @RequestParam(required = false) Boolean recent,
             Model model) {
 
-        // null = false (checkbox)
+
         boolean recentFlag = (recent != null && recent);
 
         List<Product> products = productService.searchProducts(
@@ -76,10 +76,10 @@ public class ProductWebController {
             recentlyViewed = new ArrayList<>();
         }
 
-        // Remove if already exists
+
         recentlyViewed.removeIf(p -> p.getProductId().equals(product.getProductId()));
 
-        // Add at top
+
         recentlyViewed.add(0, product);
 
         // Limit to 5
@@ -99,7 +99,7 @@ public class ProductWebController {
         return "product-detail";
     }
 
-    // Helper class
+
     public static class SearchParams {
         public String name, category, keyword;
         public Double minPrice, maxPrice;
