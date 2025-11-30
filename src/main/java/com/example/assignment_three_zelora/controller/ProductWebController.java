@@ -82,7 +82,7 @@ public class ProductWebController {
 
         recentlyViewed.add(0, product);
 
-        // Limit to 5
+        // Limited to 5
         if (recentlyViewed.size() > 5) {
             recentlyViewed = recentlyViewed.subList(0, 5);
         }
